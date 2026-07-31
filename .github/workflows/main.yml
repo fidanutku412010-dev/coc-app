@@ -1,31 +1,23 @@
-name: Android APK
+name: Main Workflow
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Kodu indir
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Python kur
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+    - name: Run a one-line script
+      run: echo Hello, world!
 
-      - name: Buildozer kur
-        run: |
-          pip install buildozer cython
-
-      - name: APK oluştur
-        run: |
-          buildozer android debug
-
-      - name: APK'yi yükle
-        uses: actions/upload-artifact@v4
-        with:
-          name: coc-app-apk
-          path: bin/*.apk
+    - name: Run a multi-line script
+      run: |
+        echo Add other commands here,
+        echo line by line.
