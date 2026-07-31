@@ -1,9 +1,8 @@
-name: Main Workflow
+
+name: Build Python to APK
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -11,13 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Code Checkout
       uses: actions/checkout@v4
 
-    - name: Run a one-line script
-      run: echo Hello, world!
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-    - name: Run a multi-line script
+    - name: Install dependencies
       run: |
-        echo Add other commands here,
-        echo line by line.
+        sudo apt-get update
+        sudo apt-get install -y build-essential libssl-dev libffi-dev python3-dev ccache zip unzip openjdk-17-jdk targetcli-fb
+        pip install --upgrade pip
+        pip install buildozer cython
+
+    - name: Build APK with Buildozer
+      run: |
+        yes | buildozer -v android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-app-apk
+        path: bin/*.apk
