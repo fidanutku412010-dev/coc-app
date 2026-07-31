@@ -1,0 +1,31 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Buildozer kur
+        run: |
+          pip install buildozer cython
+
+      - name: APK oluştur
+        run: |
+          buildozer android debug
+
+      - name: APK'yi yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: coc-app-apk
+          path: bin/*.apk
